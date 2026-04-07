@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: dpi-web-backend
+    runtime: node
+    buildCommand: "cd backend && npm install && javac -d ../out $(find ../src -name '*.java') && npm start"
+    startCommand: "cd backend && npm start"
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GROQ_MODEL
+        value: llama-3.1-8b-instant
