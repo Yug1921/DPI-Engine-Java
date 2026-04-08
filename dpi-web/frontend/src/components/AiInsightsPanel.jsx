@@ -17,7 +17,6 @@ function Pill({ children, warm = false }) {
 }
 
 export default function AiInsightsPanel({ insights = null, loading = false, error = "" }) {
-  const provider = insights?.provider || "google-gemini";
   const riskLevel = String(insights?.riskLevel || "medium").toLowerCase();
   const signals = Array.isArray(insights?.keySignals) ? insights.keySignals : [];
   const recommendations = Array.isArray(insights?.recommendations) ? insights.recommendations : [];
@@ -48,7 +47,7 @@ export default function AiInsightsPanel({ insights = null, loading = false, erro
             {error}
           </div>
         ) : insights ? (
-          <div className="grid gap-4 lg:grid-cols-[1.4fr_0.9fr]">
+          <div className="grid gap-4 xl:grid-cols-2">
             <div className="space-y-4">
               <div className={`rounded-2xl border p-4 ${riskStyles[riskLevel] || riskStyles.medium}`}>
                 <div className="text-xs uppercase tracking-[0.24em] opacity-70 mb-2">Executive take</div>
@@ -63,9 +62,7 @@ export default function AiInsightsPanel({ insights = null, loading = false, erro
                   {insights.blockedImpact || "No blocked-impact narrative available."}
                 </p>
               </div>
-            </div>
 
-            <div className="space-y-4">
               <div className="rounded-2xl border border-border bg-black/20 p-4">
                 <div className="text-xs uppercase tracking-[0.24em] text-text-300 mb-3">Key signals</div>
                 <div className="flex flex-wrap gap-2">
@@ -80,28 +77,22 @@ export default function AiInsightsPanel({ insights = null, loading = false, erro
                   )}
                 </div>
               </div>
+            </div>
 
-              <div className="rounded-2xl border border-border bg-black/20 p-4">
-                <div className="text-xs uppercase tracking-[0.24em] text-text-300 mb-3">Follow-up</div>
-                <ul className="space-y-2 text-sm text-text-100">
-                  {recommendations.length ? (
-                    recommendations.map((item, index) => (
-                      <li key={`${item}-${index}`} className="flex gap-2">
-                        <span className="mt-1 h-2 w-2 rounded-full bg-orange-400 shrink-0" />
-                        <span>{item}</span>
-                      </li>
-                    ))
-                  ) : (
-                    <li className="text-text-300">No recommendations returned.</li>
-                  )}
-                </ul>
-              </div>
-
-              {insights.notes ? (
-                <div className="rounded-2xl border border-accent-500/20 bg-accent-500/10 p-4 text-sm text-accent-50/90">
-                  {insights.notes}
-                </div>
-              ) : null}
+            <div className="rounded-2xl border border-border bg-black/20 p-4">
+              <div className="text-xs uppercase tracking-[0.24em] text-text-300 mb-3">Follow-up</div>
+              <ul className="space-y-2 text-sm text-text-100">
+                {recommendations.length ? (
+                  recommendations.map((item, index) => (
+                    <li key={`${item}-${index}`} className="flex gap-2">
+                      <span className="mt-1 h-2 w-2 rounded-full bg-orange-400 shrink-0" />
+                      <span>{item}</span>
+                    </li>
+                  ))
+                ) : (
+                  <li className="text-text-300">No recommendations returned.</li>
+                )}
+              </ul>
             </div>
           </div>
         ) : (

@@ -97,7 +97,7 @@ The frontend usually runs on `http://localhost:5173`.
 - Only `.pcap` files are accepted.
 - The backend processes one run at a time.
 - `DEMO_MODE=true` makes the backend return sample results without running Java.
-- AI insights are optional.
+- AI insights only work when the backend has a valid `GEMINI_API_KEY` or `GROQ_API_KEY`; otherwise the app shows a local fallback summary.
 
 ## If Something Fails
 
