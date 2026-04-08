@@ -1,7 +1,4 @@
 import {
-  PieChart,
-  Pie,
-  Cell,
   ResponsiveContainer,
   Tooltip,
   Legend,
@@ -9,21 +6,10 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Bar
+  Bar,
+  LineChart,
+  Line
 } from "recharts";
-
-const PIE_COLORS = [
-  "#22d3ee", // cyan
-  "#a78bfa", // violet
-  "#f59e0b", // amber
-  "#34d399", // emerald
-  "#f43f5e", // rose
-  "#60a5fa", // blue
-  "#f97316", // orange
-  "#84cc16", // lime
-  "#e879f9", // fuchsia
-  "#fb7185"  // pink
-];
 
 function normalizeAppData(applications = []) {
   return applications
@@ -44,55 +30,66 @@ function normalizeThreadData(threadStats = {}) {
 }
 
 export default function ChartsPanel({ applications = [], threadStats = {} }) {
-  const appData = normalizeAppData(applications);
+  const appData = normalizeAppData(applications).slice(0, 8);
   const threadData = normalizeThreadData(threadStats);
+
+  const tooltipStyle = {
+    background: "#0f1722",
+    border: "1px solid #233244",
+    borderRadius: 14,
+    color: "#e8eef5",
+    boxShadow: "0 18px 50px rgba(0,0,0,0.35)"
+  };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <div className="bg-bg-800 border border-border rounded-2xl p-4 min-h-[320px]">
-        <h3 className="text-2xl font-semibold mb-4">Application Distribution</h3>
+      <div className="rounded-[24px] border border-border/80 bg-bg-800/80 p-5 shadow-panel min-h-[340px]">
+        <div className="flex items-start justify-between gap-3 mb-4">
+          <div>
+            <div className="text-[11px] uppercase tracking-[0.28em] text-text-300 mb-1">Overview</div>
+            <h3 className="text-2xl font-semibold">Traffic Trend</h3>
+          </div>
+          <div className="rounded-full border border-border bg-bg-900 px-3 py-1 text-xs text-text-300">
+            last scan
+          </div>
+        </div>
 
         {appData.length === 0 ? (
           <div className="text-text-300">No application data available</div>
         ) : (
           <div className="h-[260px]">
             <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={appData}
-                  dataKey="value"
-                  nameKey="name"
-                  outerRadius={95}
-                  innerRadius={35}
-                  paddingAngle={2}
-                  labelLine={false}
-                >
-                  {appData.map((_, idx) => (
-                    <Cell
-                      key={`cell-${idx}`}
-                      fill={PIE_COLORS[idx % PIE_COLORS.length]}
-                      stroke="#0b1220"
-                      strokeWidth={1}
-                    />
-                  ))}
-                </Pie>
-                <Tooltip
-                  contentStyle={{
-                    background: "#0f172a",
-                    border: "1px solid #334155",
-                    borderRadius: 10,
-                    color: "#e2e8f0"
-                  }}
-                />
+              <LineChart data={appData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#223140" />
+                <XAxis dataKey="name" stroke="#a9b4c2" tickLine={false} axisLine={false} />
+                <YAxis stroke="#a9b4c2" tickLine={false} axisLine={false} />
+                <Tooltip contentStyle={tooltipStyle} />
                 <Legend wrapperStyle={{ color: "#cbd5e1" }} />
-              </PieChart>
+                <Line
+                  type="monotone"
+                  dataKey="value"
+                  name="Packets"
+                  stroke="#22c3ee"
+                  strokeWidth={3}
+                  dot={{ r: 4, fill: "#22c3ee", strokeWidth: 0 }}
+                  activeDot={{ r: 6 }}
+                />
+              </LineChart>
             </ResponsiveContainer>
           </div>
         )}
       </div>
 
-      <div className="bg-bg-800 border border-border rounded-2xl p-4 min-h-[320px]">
-        <h3 className="text-2xl font-semibold mb-4">Thread Performance</h3>
+      <div className="rounded-[24px] border border-border/80 bg-bg-800/80 p-5 shadow-panel min-h-[340px]">
+        <div className="flex items-start justify-between gap-3 mb-4">
+          <div>
+            <div className="text-[11px] uppercase tracking-[0.28em] text-text-300 mb-1">Distribution</div>
+            <h3 className="text-2xl font-semibold">Protocol Mix</h3>
+          </div>
+          <div className="rounded-full border border-border bg-bg-900 px-3 py-1 text-xs text-text-300">
+            this run
+          </div>
+        </div>
 
         {threadData.length === 0 ? (
           <div className="text-text-300">No thread stats available</div>
@@ -100,18 +97,12 @@ export default function ChartsPanel({ applications = [], threadStats = {} }) {
           <div className="h-[260px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={threadData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
-                <XAxis dataKey="name" stroke="#cbd5e1" />
-                <YAxis stroke="#cbd5e1" />
-                <Tooltip
-                  contentStyle={{
-                    background: "#0f172a",
-                    border: "1px solid #334155",
-                    borderRadius: 10,
-                    color: "#e2e8f0"
-                  }}
-                />
-                <Bar dataKey="value" fill="#22d3ee" radius={[6, 6, 0, 0]} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#223140" />
+                <XAxis dataKey="name" stroke="#a9b4c2" tickLine={false} axisLine={false} />
+                <YAxis stroke="#a9b4c2" tickLine={false} axisLine={false} />
+                <Tooltip contentStyle={tooltipStyle} />
+                <Legend wrapperStyle={{ color: "#cbd5e1" }} />
+                <Bar dataKey="value" name="Packets" fill="#3b82f6" radius={[10, 10, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

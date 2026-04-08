@@ -1,12 +1,12 @@
 const riskStyles = {
-  low: "border-emerald-500/30 bg-emerald-500/10 text-emerald-200",
-  medium: "border-orange-500/30 bg-orange-500/10 text-orange-100",
-  high: "border-red-500/30 bg-red-500/10 text-red-100"
+  low: "border-emerald-500/20 bg-emerald-500/10 text-emerald-200",
+  medium: "border-sky-500/20 bg-sky-500/10 text-sky-100",
+  high: "border-rose-500/20 bg-rose-500/10 text-rose-100"
 };
 
 function Pill({ children, warm = false }) {
   const toneClass = warm
-    ? "border-orange-500/40 bg-orange-500/10 text-orange-100"
+    ? "border-accent-500/30 bg-accent-500/10 text-accent-100"
     : "border-white/10 bg-white/5 text-text-200";
 
   return (
@@ -23,18 +23,13 @@ export default function AiInsightsPanel({ insights = null, loading = false, erro
   const recommendations = Array.isArray(insights?.recommendations) ? insights.recommendations : [];
 
   return (
-    <section className="relative overflow-hidden rounded-[28px] border border-orange-500/20 bg-gradient-to-br from-bg-800 via-bg-900 to-black shadow-ember">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,122,0,0.18),transparent_28%)]" />
+    <section className="relative overflow-hidden rounded-[24px] border border-border/80 bg-bg-800/80 shadow-panel">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(34,195,238,0.08),transparent_28%)]" />
       <div className="relative p-5 md:p-6">
         <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
           <div>
-            <div className="flex items-center gap-2 mb-2 flex-wrap">
-              <Pill warm>AI Analyst</Pill>
-              <Pill>{provider}</Pill>
-              <Pill>Risk: {riskLevel}</Pill>
-            </div>
             <h2 className="text-2xl md:text-3xl font-black tracking-tight text-text-100">
-              {insights?.title || "AI-generated DPI summary"}
+              {insights?.title || "Traffic summary"}
             </h2>
           </div>
           {insights?.generatedAt ? (
@@ -45,8 +40,8 @@ export default function AiInsightsPanel({ insights = null, loading = false, erro
         </div>
 
         {loading ? (
-          <div className="rounded-2xl border border-orange-500/20 bg-black/20 p-4 text-text-200">
-            Generating analyst summary with Google Gemini...
+          <div className="rounded-2xl border border-border bg-black/20 p-4 text-text-200">
+            Generating summary...
           </div>
         ) : error ? (
           <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-red-100">
@@ -56,14 +51,14 @@ export default function AiInsightsPanel({ insights = null, loading = false, erro
           <div className="grid gap-4 lg:grid-cols-[1.4fr_0.9fr]">
             <div className="space-y-4">
               <div className={`rounded-2xl border p-4 ${riskStyles[riskLevel] || riskStyles.medium}`}>
-                <div className="text-xs uppercase tracking-[0.24em] opacity-70 mb-2">Executive Summary</div>
+                <div className="text-xs uppercase tracking-[0.24em] opacity-70 mb-2">Executive take</div>
                 <p className="text-sm md:text-base leading-7 text-text-100">
                   {insights.executiveSummary || "No summary returned by the model."}
                 </p>
               </div>
 
               <div className="rounded-2xl border border-border bg-black/20 p-4">
-                <div className="text-xs uppercase tracking-[0.24em] text-text-300 mb-3">Blocked Impact</div>
+                <div className="text-xs uppercase tracking-[0.24em] text-text-300 mb-3">Blocked impact</div>
                 <p className="text-sm leading-7 text-text-100">
                   {insights.blockedImpact || "No blocked-impact narrative available."}
                 </p>
@@ -72,7 +67,7 @@ export default function AiInsightsPanel({ insights = null, loading = false, erro
 
             <div className="space-y-4">
               <div className="rounded-2xl border border-border bg-black/20 p-4">
-                <div className="text-xs uppercase tracking-[0.24em] text-text-300 mb-3">Key Signals</div>
+                <div className="text-xs uppercase tracking-[0.24em] text-text-300 mb-3">Key signals</div>
                 <div className="flex flex-wrap gap-2">
                   {signals.length ? (
                     signals.map((signal, index) => (
@@ -87,7 +82,7 @@ export default function AiInsightsPanel({ insights = null, loading = false, erro
               </div>
 
               <div className="rounded-2xl border border-border bg-black/20 p-4">
-                <div className="text-xs uppercase tracking-[0.24em] text-text-300 mb-3">Next Steps</div>
+                <div className="text-xs uppercase tracking-[0.24em] text-text-300 mb-3">Follow-up</div>
                 <ul className="space-y-2 text-sm text-text-100">
                   {recommendations.length ? (
                     recommendations.map((item, index) => (
@@ -103,15 +98,15 @@ export default function AiInsightsPanel({ insights = null, loading = false, erro
               </div>
 
               {insights.notes ? (
-                <div className="rounded-2xl border border-orange-500/20 bg-orange-500/10 p-4 text-sm text-orange-50/90">
+                <div className="rounded-2xl border border-accent-500/20 bg-accent-500/10 p-4 text-sm text-accent-50/90">
                   {insights.notes}
                 </div>
               ) : null}
             </div>
           </div>
         ) : (
-          <div className="rounded-2xl border border-dashed border-orange-500/20 bg-black/20 p-4 text-text-300">
-            Run a DPI analysis to generate an AI summary.
+          <div className="rounded-2xl border border-dashed border-border bg-black/20 p-4 text-text-300">
+            Run a DPI analysis to generate a concise analyst summary.
           </div>
         )}
       </div>

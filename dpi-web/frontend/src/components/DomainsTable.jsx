@@ -1,12 +1,20 @@
 export default function DomainsTable({ domains = [] }) {
   return (
-    <div className="bg-bg-800 border border-border rounded-2xl p-4">
-      <h3 className="text-2xl font-semibold mb-4">Detected Domains / SNI</h3>
+    <div className="rounded-[24px] border border-border/80 bg-bg-800/80 p-5 shadow-panel">
+      <div className="flex items-start justify-between gap-3 mb-4">
+        <div>
+          <div className="text-[11px] uppercase tracking-[0.28em] text-text-300 mb-1">Observability</div>
+          <h3 className="text-2xl font-semibold">Detected Domains / SNI</h3>
+        </div>
+        <div className="rounded-full border border-border bg-bg-900 px-3 py-1 text-xs text-text-300">
+          latest run
+        </div>
+      </div>
 
       {domains.length === 0 ? (
         <div className="text-text-300">No domains available.</div>
       ) : (
-        <div className="max-h-[360px] overflow-auto rounded border border-border">
+        <div className="max-h-[360px] overflow-auto rounded-2xl border border-border">
           <table className="w-full text-left border-collapse">
             <thead className="sticky top-0 z-10 bg-bg-700">
               <tr className="text-text-300 border-b border-border">

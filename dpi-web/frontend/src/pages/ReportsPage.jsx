@@ -14,24 +14,28 @@ export default function ReportsPage() {
   return (
     <div className="flex min-h-screen bg-bg-900 text-text-100">
       <Sidebar />
-      <main className="flex-1 p-6 space-y-4">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Reports</h1>
+      <main className="flex-1 p-4 md:p-6 space-y-4">
+        <div className="rounded-[28px] border border-border/80 bg-bg-800/80 px-5 py-5 shadow-panel flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <div className="text-xs uppercase tracking-[0.32em] text-text-300">Dashboard / Reports</div>
+            <h1 className="mt-2 text-3xl font-black tracking-tight">Reports</h1>
+            <p className="mt-2 text-sm text-text-300">Review local run history and reopen filtered captures without leaving the console.</p>
+          </div>
           <button
             type="button"
             onClick={onClear}
-            className="px-3 py-2 rounded bg-red-600 hover:bg-red-500 text-white"
+            className="px-4 py-2 rounded-2xl border border-border bg-bg-900 text-text-100 hover:bg-bg-700 transition"
           >
             Clear Local History
           </button>
         </div>
 
         {rows.length === 0 ? (
-          <div className="bg-bg-800 border border-border rounded-xl p-4 text-text-300">
+          <div className="rounded-[24px] border border-border/80 bg-bg-800/80 p-5 text-text-300 shadow-panel">
             No report history found.
           </div>
         ) : (
-          <div className="bg-bg-800 border border-border rounded-xl p-4 overflow-auto">
+          <div className="rounded-[24px] border border-border/80 bg-bg-800/80 p-5 overflow-auto shadow-panel">
             <table className="w-full text-left min-w-[950px]">
               <thead>
                 <tr className="text-text-300 border-b border-border">

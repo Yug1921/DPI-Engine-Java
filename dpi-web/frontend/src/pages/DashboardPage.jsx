@@ -195,21 +195,19 @@ export default function DashboardPage() {
     <div className="flex min-h-screen bg-bg-950 text-text-100">
       <Sidebar />
 
-      <main className="flex-1 p-6 space-y-4">
-        <div className="rounded-[28px] border border-orange-500/15 bg-gradient-to-r from-bg-800 via-bg-900 to-black px-6 py-5 shadow-panel">
-          <div className="flex flex-wrap items-end justify-between gap-3">
-            <div>
-              <div className="text-xs uppercase tracking-[0.3em] text-orange-300 mb-2">DPI analysis workspace</div>
-              <h1 className="text-3xl md:text-4xl font-black tracking-tight">Black & orange packet intelligence</h1>
-            </div>
-            <div className="text-sm text-text-300 max-w-xl">
-              Upload a capture, apply block rules, and let the local engine plus Google Gemini turn raw traffic into an analyst-ready summary.
-            </div>
+      <main className="flex-1 p-4 md:p-6 space-y-4">
+        <header className="rounded-[28px] border border-border/80 bg-bg-800/80 px-5 py-5 shadow-panel backdrop-blur">
+          <div>
+            <div className="text-xs uppercase tracking-[0.32em] text-text-300">Dashboard / CMS</div>
+            <h1 className="mt-2 text-3xl md:text-4xl font-black tracking-tight">DPI Engine Analysis Dashboard</h1>
+            <p className="mt-2 max-w-2xl text-sm text-text-300">
+              Inspect captures, apply block rules, and review the local engine output with a concise analyst summary.
+            </p>
           </div>
-        </div>
+        </header>
 
         {toast && (
-          <div className="fixed top-4 right-4 bg-orange-500 text-black px-4 py-2 rounded shadow-lg z-50 font-medium">
+          <div className="fixed top-4 right-4 bg-accent-500 text-black px-4 py-2 rounded shadow-lg z-50 font-medium">
             {toast}
           </div>
         )}
@@ -248,7 +246,7 @@ export default function DashboardPage() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
           <UploadPanel file={file} setFile={setFile} />
           <ControlPanel
             selectedApps={selectedApps}
@@ -258,7 +256,13 @@ export default function DashboardPage() {
           />
         </div>
 
-        <StatsCards summary={result?.summary || {}} blockedApps={blockedApps} domains={visibleDomains} />
+        <StatsCards
+          summary={result?.summary || {}}
+          blockedApps={blockedApps}
+          blockedDomains={blockedDomains}
+          domains={visibleDomains}
+          insightsReady={Boolean(result?.aiInsights)}
+        />
 
         <AiInsightsPanel
           insights={result?.aiInsights || null}
@@ -270,10 +274,10 @@ export default function DashboardPage() {
         <DomainsTable domains={visibleDomains} />
 
         {downloadHref && (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 rounded-[20px] border border-border/80 bg-bg-800/80 px-4 py-3 shadow-panel">
             <a
               href={downloadHref}
-              className="inline-block px-4 py-2 rounded bg-orange-500 text-black font-semibold hover:brightness-110"
+              className="inline-flex items-center px-4 py-2 rounded-2xl bg-accent-500 text-black font-semibold hover:brightness-110"
               download
             >
               Download Filtered PCAP

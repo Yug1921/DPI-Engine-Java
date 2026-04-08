@@ -14,8 +14,16 @@ export default function ControlPanel({
   };
 
   return (
-    <div className="bg-bg-800 border border-border rounded-2xl p-4 min-h-[220px]">
-      <h3 className="text-2xl font-semibold mb-4">Controls</h3>
+    <div className="rounded-[24px] border border-border/80 bg-bg-800/80 p-5 shadow-panel min-h-[220px]">
+      <div className="flex items-start justify-between gap-3 mb-4">
+        <div>
+          <div className="text-[11px] uppercase tracking-[0.28em] text-text-300 mb-1">Rules</div>
+          <h3 className="text-2xl font-semibold">Controls</h3>
+        </div>
+        <div className="rounded-full border border-border bg-bg-900 px-3 py-1 text-xs text-text-300">
+          blocklist
+        </div>
+      </div>
 
       <div className="grid grid-cols-2 gap-2 mb-4">
         {AVAILABLE_APPS.map((app) => {
@@ -23,7 +31,7 @@ export default function ControlPanel({
           return (
             <label
               key={app}
-              className={`flex items-center gap-2 px-2 py-1 rounded ${
+              className={`flex items-center gap-2 px-3 py-2 rounded-2xl border border-transparent ${
                 loading ? "opacity-70 cursor-not-allowed" : "cursor-pointer hover:bg-bg-700/50"
               }`}
             >
@@ -32,7 +40,7 @@ export default function ControlPanel({
                 checked={checked}
                 disabled={loading}
                 onChange={() => toggleApp(app)}
-                className="accent-cyan-400"
+                className="accent-accent-500"
               />
               <span>{app}</span>
             </label>
