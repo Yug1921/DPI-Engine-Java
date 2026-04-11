@@ -27,6 +27,13 @@ app.use((err, req, res, next) => {
   next();
 });
 
+app.get("/api/test", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Backend is working on Render 🚀",
+    time: new Date().toISOString()
+  });
+});
 app.listen(PORT, () => {
   console.log(`DPI web backend running on http://localhost:${PORT}`);
   startCleanupJob(); // start after server boots
