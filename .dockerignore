@@ -1,0 +1,22 @@
+# Node dependencies
+node_modules
+**/node_modules
+
+# Environment files (use Render env vars instead)
+.env
+**/.env
+
+# Git
+.git
+.gitignore
+
+# Frontend (not needed in backend image)
+dpi-web/frontend
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
