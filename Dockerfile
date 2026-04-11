@@ -10,7 +10,6 @@ WORKDIR /app
 # Copy source
 COPY src/ ./src/
 COPY dpi-web/backend/ ./backend/
-COPY dpi-web/out/ ./out/ 2>/dev/null || true
 
 # Compile Java into out/
 RUN mkdir -p out && \
