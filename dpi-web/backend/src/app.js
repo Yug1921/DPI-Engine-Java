@@ -9,6 +9,13 @@ const { PORT } = require("./config/constants");
 const { startCleanupJob } = require("./services/cleanup.service");
 
 const app = express();
+app.get("/api/test", (req, res) => {
+  res.status(200).json({
+    status: "success",
+    message: "Render backend working",
+    time: new Date().toISOString()
+  });
+});
 
 // Ensure required directories exist
 if (!fs.existsSync(uploadDirAbs)) fs.mkdirSync(uploadDirAbs, { recursive: true });
@@ -27,13 +34,6 @@ app.use((err, req, res, next) => {
   next();
 });
 
-app.get("/api/test", (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "Backend is working on Render 🚀",
-    time: new Date().toISOString()
-  });
-});
 app.listen(PORT, () => {
   console.log(`DPI web backend running on http://localhost:${PORT}`);
   startCleanupJob(); // start after server boots
