@@ -22,6 +22,7 @@ A multi-threaded **Deep Packet Inspection (DPI)** engine written in Java, paired
 - [Project Structure](#project-structure)
 - [Deployment on Render](#deployment-on-render)
 - [Troubleshooting](#troubleshooting)
+- [License](#license)
 
 ---
 
@@ -243,23 +244,32 @@ DEMO_MODE=false                 # set true to return mock data without running J
 
 ## Deployment on Render
 
-### Backend (Web Service)
+Both the backend and the frontend are deployed on [Render](https://render.com).
+
+### Backend — Render Web Service
 
 | Setting | Value |
 |---|---|
-| Root Directory | `dpi-web/backend` |
-| Environment | Node |
-| Build Command | `npm install && cd ../../ && find src -name "*.java" \| xargs javac -d dpi-web/out` |
-| Start Command | `npm start` |
-| Environment variable `JAVA_OUT_DIR` | `../../out` |
+| **Service type** | Web Service |
+| **Root Directory** | `dpi-web/backend` |
+| **Environment** | Node |
+| **Build Command** | `npm install && cd ../../ && find src -name "*.java" \| xargs javac -d dpi-web/out` |
+| **Start Command** | `npm start` |
+| **Env var `JAVA_OUT_DIR`** | `../../out` |
+| **Env var `GROQ_API_KEY`** | *(set in Render dashboard, do not commit)* |
+| **Env var `GEMINI_API_KEY`** | *(set in Render dashboard, do not commit)* |
 
-### Frontend (Static Site)
+### Frontend — Render Static Site
 
 | Setting | Value |
 |---|---|
-| Root Directory | `dpi-web/frontend` |
-| Build Command | `npm install && npm run build` |
-| Publish Directory | `dist` |
+| **Service type** | Static Site |
+| **Root Directory** | `dpi-web/frontend` |
+| **Build Command** | `npm install && npm run build` |
+| **Publish Directory** | `dist` |
+| **Env var `VITE_API_BASE_URL`** | Your deployed backend URL (e.g. `https://dpi-web-backend.onrender.com`) |
+
+> **Note:** Set `VITE_API_BASE_URL` in the Render dashboard for the Static Site so the frontend knows where to reach the API. Add the frontend's Render URL to the backend's CORS allowed origins if you restrict them.
 
 ---
 
@@ -274,3 +284,33 @@ DEMO_MODE=false                 # set true to return mock data without running J
 | File too large / timeout | Lower `WEB_MAX_PACKETS` (e.g. `2000`) or use a smaller capture |
 | AI insights show "local fallback" | Add a valid `GROQ_API_KEY` or `GEMINI_API_KEY` to the backend environment |
 | CORS errors in browser | Make sure the backend `BACKEND_BASE_URL` env var matches your deployed backend URL and the frontend points to that URL |
+
+---
+
+## License
+
+This project is licensed under the **MIT License**.
+
+```
+MIT License
+
+Copyright (c) 2024 Yug1921
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
