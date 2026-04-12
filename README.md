@@ -19,7 +19,6 @@ A multi-threaded **Deep Packet Inspection (DPI)** engine written in Java, paired
   - [4. Start the frontend](#4-start-the-frontend)
 - [Example Walk-Through](#example-walk-through)
 - [Environment Variables](#environment-variables)
-- [Project Structure](#project-structure)
 - [Deployment on Render](#deployment-on-render)
 - [Troubleshooting](#troubleshooting)
 - [License](#license)
