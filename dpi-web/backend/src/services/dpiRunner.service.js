@@ -2,14 +2,56 @@ const { execFile } = require("child_process");
 const path = require("path");
 const fs = require("fs");
 const { javaOutDirAbs, generatedDirAbs } = require("../utils/paths");
+const { JAVA_MAIN_CLASS } = require("../config/constants");
 const { parseDpiOutput } = require("./reportParser.service");
 
 const WEB_MAX_PACKETS = Number(process.env.WEB_MAX_PACKETS || 5000);
+
+function resolveJavaLaunchConfig() {
+  const mainClass = (JAVA_MAIN_CLASS || "Main").trim() || "Main";
+  const mainClassFileRel = `${mainClass.replace(/\./g, path.sep)}.class`;
+
+  const candidateDirs = [
+    javaOutDirAbs,
+    path.resolve(process.cwd(), "../out"),
+    path.resolve(process.cwd(), "../../out"),
+    "/app/out",
+    "/out"
+  ];
+
+  const uniqueExistingDirs = [...new Set(candidateDirs)].filter((dir) => {
+    try {
+      return fs.existsSync(dir) && fs.statSync(dir).isDirectory();
+    } catch {
+      return false;
+    }
+  });
+
+  const dirsWithMainClass = uniqueExistingDirs.filter((dir) =>
+    fs.existsSync(path.join(dir, mainClassFileRel))
+  );
+
+  const classPathEntries = dirsWithMainClass.length > 0 ? dirsWithMainClass : uniqueExistingDirs;
+  const classPath = classPathEntries.length > 0
+    ? classPathEntries.join(path.delimiter)
+    : javaOutDirAbs;
+
+  if (dirsWithMainClass.length === 0) {
+    console.warn(
+      `[DPI RUNNER] Main class file '${mainClassFileRel}' not found in detected output dirs; using classpath '${classPath}'.`
+    );
+  } else if (classPathEntries.length > 1) {
+    console.log(`[DPI RUNNER] Using multi-entry classpath: ${classPath}`);
+  }
+
+  return { classPath, mainClass };
+}
 
 function runDpiEngine({ inputPath, runId, blockApps = [] }) {
   return new Promise((resolve, reject) => {
     const outputFileName = `filtered_${runId}.pcap`;
     const outputPath = path.join(generatedDirAbs, outputFileName);
+    const { classPath, mainClass } = resolveJavaLaunchConfig();
 
     const args = [
       "-Xms32m",
@@ -17,8 +59,8 @@ function runDpiEngine({ inputPath, runId, blockApps = [] }) {
       "-Xss256k",
       "-XX:+UseSerialGC",
       "-cp",
-      javaOutDirAbs,
-      "Main",
+      classPath,
+      mainClass,
       inputPath,
       outputPath
     ];
