@@ -19,7 +19,7 @@ A multi-threaded **Deep Packet Inspection (DPI)** engine written in Java, paired
   - [4. Start the frontend](#4-start-the-frontend)
 - [Example Walk-Through](#example-walk-through)
 - [Environment Variables](#environment-variables)
-- [Deployment on Render](#deployment-on-render)
+- [Deployment](#deployment)
 - [Troubleshooting](#troubleshooting)
 - [License](#license)
 
@@ -46,7 +46,7 @@ Network traffic analysis normally requires heavyweight tools like Wireshark or c
 | **Block rules** | Filter packets by application, source IP, or domain |
 | **Multi-threaded engine** | Reader thread + load-balanced flow-processor threads for fast processing |
 | **Filtered PCAP output** | Downloads a new PCAP containing only the packets that passed your rules |
-| **AI insights** | Summarises the run with Groq (Llama) or Gemini; falls back to a local heuristic summary when no key is set |
+| **AI insights** | Summarises the run using OpenRouter (recommended); falls back to a local heuristic summary when no key is set |
 | **Charts & tables** | Bar charts, flow tables, domain tables, and stats cards in the React dashboard |
 
 ---
@@ -124,7 +124,7 @@ DPI-Engine-Java/
 |---|---|
 | DPI Engine | Java 17+, multi-threaded (no external libraries) |
 | Backend API | Node.js, Express |
-| AI Insights | Groq API (Llama 3) / Google Gemini API (optional) |
+| AI Insights | OpenRouter (recommended) — set `OPENROUTER_API_KEY` in the backend environment |
 | Frontend | React 19, Vite, Tailwind CSS v3, Recharts, Axios |
 | Deployment | Backend: Render (Web Service), Frontend: Vercel (Static Site) |
 
@@ -226,11 +226,8 @@ JAVA_OUT_DIR=../../out          # path to compiled Java classes relative to back
 JAVA_MAIN_CLASS=Main
 
 # Optional – AI insights
-GROQ_API_KEY=your_groq_key_here
-GROQ_MODEL=llama-3.1-8b-instant
-
-GEMINI_API_KEY=your_gemini_key_here
-GEMINI_MODEL=gemini-2.0-flash
+OPENROUTER_API_KEY=your_openrouter_key_here
+OPENROUTER_MODEL=openai/gpt-4o-mini
 
 # Optional – limits
 WEB_MAX_PACKETS=5000            # cap packets per analysis run (0 = unlimited)
@@ -281,7 +278,7 @@ The backend is deployed on [Render](https://render.com) as a Web Service. The fr
 | Backend starts but returns no data | Set `DEMO_MODE=true` to verify the API works, then check `JAVA_OUT_DIR` |
 | Frontend build fails on Render | Ensure `@tailwindcss/postcss` is **not** in `package.json` (it is a Tailwind v4 package incompatible with the v3 config used here) |
 | File too large / timeout | Lower `WEB_MAX_PACKETS` (e.g. `2000`) or use a smaller capture |
-| AI insights show "local fallback" | Add a valid `GROQ_API_KEY` or `GEMINI_API_KEY` to the backend environment |
+| AI insights show "local fallback" | Add a valid `OPENROUTER_API_KEY` to the backend environment |
 | CORS errors in browser | Make sure the backend `BACKEND_BASE_URL` env var matches your deployed backend URL and the frontend points to that URL |
 
 ---
