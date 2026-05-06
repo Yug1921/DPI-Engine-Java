@@ -1,4 +1,4 @@
-const { GROQ_API_KEY, GROQ_MODEL, GEMINI_API_KEY, GEMINI_MODEL } = require("../config/constants");
+const { OPENROUTER_API_KEY, OPENROUTER_MODEL } = require("../config/constants");
 
 function toNumber(value, fallback = 0) {
   const parsed = Number(value);
@@ -134,8 +134,8 @@ function isQuotaError(err) {
   );
 }
 
-async function callGemini(analysis) {
-  if (!GEMINI_API_KEY) {
+async function callOpenRouter(analysis) {
+  if (!OPENROUTER_API_KEY) {
     return buildFallbackInsights(analysis);
   }
 
@@ -143,58 +143,14 @@ async function callGemini(analysis) {
     return buildFallbackInsights(analysis);
   }
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(
-    GEMINI_MODEL
-  )}:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`;
-
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      contents: [
-        {
-          role: "user",
-          parts: [{ text: buildPrompt(analysis) }]
-        }
-      ],
-      generationConfig: {
-        temperature: 0.2,
-        maxOutputTokens: 512,
-        responseMimeType: "application/json"
-      }
-    })
-  });
-
-  if (!response.ok) {
-    const body = await response.text();
-    throw new Error(`Gemini request failed (${response.status}): ${body}`);
-  }
-
-  const data = await response.json();
-  const text = data?.candidates?.[0]?.content?.parts?.map((part) => part?.text || "").join("") || "";
-  const parsed = parseJsonBlock(text);
-  return normalizeInsights(parsed, analysis, "google-gemini", GEMINI_MODEL);
-}
-
-async function callGroq(analysis) {
-  if (!GROQ_API_KEY) {
-    return buildFallbackInsights(analysis);
-  }
-
-  if (typeof fetch !== "function") {
-    return buildFallbackInsights(analysis);
-  }
-
-  const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${GROQ_API_KEY}`
+      Authorization: `Bearer ${OPENROUTER_API_KEY}`
     },
     body: JSON.stringify({
-      model: GROQ_MODEL,
+      model: OPENROUTER_MODEL,
       temperature: 0.2,
       max_tokens: 512,
       messages: [
@@ -208,22 +164,20 @@ async function callGroq(analysis) {
 
   if (!response.ok) {
     const body = await response.text();
-    throw new Error(`Groq request failed (${response.status}): ${body}`);
+    throw new Error(`OpenRouter request failed (${response.status}): ${body}`);
   }
 
   const data = await response.json();
   const text = data?.choices?.[0]?.message?.content || "";
   const parsed = parseJsonBlock(text);
-  return normalizeInsights(parsed, analysis, "groq", GROQ_MODEL);
+  return normalizeInsights(parsed, analysis, "openrouter", OPENROUTER_MODEL);
 }
 
-async function callAnyProvider(analysis) {
-  if (GROQ_API_KEY) {
-    return callGroq(analysis);
-  }
 
-  if (GEMINI_API_KEY) {
-    return callGemini(analysis);
+
+async function callAnyProvider(analysis) {
+  if (OPENROUTER_API_KEY) {
+    return callOpenRouter(analysis);
   }
 
   return buildFallbackInsights(analysis);
@@ -238,34 +192,20 @@ async function buildDpiInsights(payload = {}) {
     const fallback = buildFallbackInsights(analysis);
 
     if (isQuotaError(err)) {
-      if (GROQ_API_KEY && String(err.message || "").toLowerCase().includes("groq")) {
-        return {
-          ...fallback,
-          provider: "fallback",
-          model: "heuristic-summary",
-          confidence: "moderate",
-          notes: "Groq quota or rate limits are blocking AI generation, so the app is showing a local summary instead."
-        };
-      }
-
       return {
         ...fallback,
         provider: "fallback",
         model: "heuristic-summary",
         confidence: "moderate",
-        notes: GROQ_API_KEY
-          ? "Groq quota or rate limits are blocking AI generation, so the app is showing a local summary instead."
-          : "AI provider quota is unavailable for this project, so the app is showing a local summary instead."
+        notes: "OpenRouter quota or rate limits are blocking AI generation, so the app is showing a local summary instead."
       };
     }
 
     return {
       ...fallback,
       provider: "fallback",
-      model: GROQ_API_KEY ? GROQ_MODEL : GEMINI_MODEL,
-      notes: GROQ_API_KEY
-        ? "Groq summary is unavailable right now, so the app is showing a local fallback summary."
-        : "AI summary is unavailable right now, so the app is showing a local fallback summary."
+      model: OPENROUTER_MODEL,
+      notes: "OpenRouter summary is unavailable right now, so the app is showing a local fallback summary."
     };
   }
 }
