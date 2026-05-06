@@ -126,7 +126,7 @@ DPI-Engine-Java/
 | Backend API | Node.js, Express |
 | AI Insights | Groq API (Llama 3) / Google Gemini API (optional) |
 | Frontend | React 19, Vite, Tailwind CSS v3, Recharts, Axios |
-| Deployment | Render (backend as Web Service, frontend as Static Site) |
+| Deployment | Backend: Render (Web Service), Frontend: Vercel (Static Site) |
 
 ---
 
@@ -241,9 +241,10 @@ DEMO_MODE=false                 # set true to return mock data without running J
 
 ---
 
-## Deployment on Render
 
-Both the backend and the frontend are deployed on [Render](https://render.com).
+## Deployment
+
+The backend is deployed on [Render](https://render.com) as a Web Service. The frontend is deployed on [Vercel](https://vercel.com) as a Static Site and is configured to use the deployed backend URL for API calls.
 
 ### Backend — Render Web Service
 
@@ -255,20 +256,19 @@ Both the backend and the frontend are deployed on [Render](https://render.com).
 | **Build Command** | `npm install && cd ../../ && find src -name "*.java" \| xargs javac -d dpi-web/out` |
 | **Start Command** | `npm start` |
 | **Env var `JAVA_OUT_DIR`** | `../../out` |
-| **Env var `GROQ_API_KEY`** | *(set in Render dashboard, do not commit)* |
-| **Env var `GEMINI_API_KEY`** | *(set in Render dashboard, do not commit)* |
+| **Env var `OPENROUTER_API_KEY` / `GROQ_API_KEY` / `GEMINI_API_KEY`** | *(set in Render dashboard, do not commit)* |
 
-### Frontend — Render Static Site
+### Frontend — Vercel Static Site
 
 | Setting | Value |
 |---|---|
-| **Service type** | Static Site |
+| **Platform** | Vercel (Static Site)
 | **Root Directory** | `dpi-web/frontend` |
 | **Build Command** | `npm install && npm run build` |
 | **Publish Directory** | `dist` |
 | **Env var `VITE_API_BASE_URL`** | Your deployed backend URL (e.g. `https://dpi-web-backend.onrender.com`) |
 
-> **Note:** Set `VITE_API_BASE_URL` in the Render dashboard for the Static Site so the frontend knows where to reach the API. Add the frontend's Render URL to the backend's CORS allowed origins if you restrict them.
+> **Note:** Set `VITE_API_BASE_URL` in the Vercel project environment variables so the frontend knows where to reach the API. Also add the frontend's Vercel URL to the backend's CORS allowed origins if you restrict them.
 
 ---
 
